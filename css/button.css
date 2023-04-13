@@ -20,3 +20,27 @@ button:hover {
 button:active {
   background-color: #3a3a3a;
 }
+
+#startButton {
+  background-color: #1d9733;
+}
+
+#startButton:hover {
+  background-color: #1bba6d;
+}
+
+#startButton:active {
+  background-color: #25a77b;
+}
+
+#stopButton {
+  background-color: #ff4d4f;
+}
+
+#stopButton:hover {
+  background-color: #ff6a6e;
+}
+
+#stopButton:active {
+  background-color: #d93e3f;
+}

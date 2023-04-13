@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="css/grid.css" />
+    <link rel="stylesheet" href="css/text.css" />
+    <link rel="stylesheet" href="css/button.css" />
+    <link rel="stylesheet" href="css/sliders.css" />
+    <link rel="stylesheet" href="css/checkbox.css" />
+    <link rel="stylesheet" href="css/misc.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="left-buttons">
+        <button class="button" id="startButton">Start</button>
+        <button class="button" id="stopButton">Stop</button>
+      </div>
+      <h1 class="title">Voice Simulator</h1>
+      <div class="right-buttons">
+        <button class="button" onclick="navigate(1)">Layout 1</button>
+        <button class="button" onclick="navigate(2)">Layout 2</button>
+        <button class="button">
+          <a
+            href="https://github.com/SyncedTogether/Voice-Simulator/"
+            target="_blank"
+          >
+            <img
+              src="resources/imgs/github-mark-white.svg"
+              alt="setting"
+              height="15"
+            />
+          </a>
+        </button>
+      </div>
+    </header>
+    <div class="container">
+      <div class="left">
+        <div class="item large-grid">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="item large-grid" id="threeJSDisplay"></div>
+      </div>
+      <div class="right">
+        <div class="item long-row">Row 1</div>
+        <div class="item long-row">Row 2</div>
+        <div class="item long-row">Row 3</div>
+        <div class="item long-row">
+          <div class="column">
+            <div class="slider-container">
+              <label for="gainSlider">Gain</label>
+              <input
+                type="range"
+                id="gainSlider"
+                value="100"
+                name="gainSlider"
+                min="0"
+                max="100"
+                oninput="gainSliderChanged()"
+              />
+              <span id="gainSlider-value">0</span>
+            </div>
+            <div class="slider-container">
+              <label for="oscillatorFreqSlider">Pitch</label>
+              <input
+                type="range"
+                id="oscillatorFreqSlider"
+                value="400"
+                name="oscillatorFreqSlider"
+                min="60"
+                max="700"
+                oninput="oscillatorFreqSliderChanged()"
+              />
+              <span id="oscillatorFreqSlider-value">400</span>
+            </div>
+            <div class="checkbox-container">
+              <label for="oscilateCheckbox">Oscilate</label>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="oscilateCheckbox"
+                  oninput="toggleSin()"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="checkbox-container">
+              <label for="gradientCheckbox">Gradient</label>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="gradientCheckbox"
+                  oninput="toggleGradient()"
+                  checked="true"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="slider-container">
+              <label for="batchSizeSlider">Batch</label>
+              <input
+                type="range"
+                id="batchSizeSlider"
+                value="50"
+                name="batchSizeSlider"
+                min="10"
+                max="2000"
+                oninput="batchSizeSliderChanged()"
+              />
+              <span id="batchSizeSlider-value">50</span>
+            </div>
+          </div>
+          <div class="column">
+            <div class="stack-panel"><p id="tickDisplay">Tick: 0</p></div>
+          </div>
+          <div class="column">Column 3</div>
+          <div class="column">Column 4</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/perlin.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/threeJS.js"></script>
+    <script src="js/handlers.js"></script>
+  </body>
+</html>

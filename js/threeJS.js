@@ -1,7 +1,7 @@
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
-  canvas.width / canvas.height,
+  threeJSDisplay.clientWidth / threeJSDisplay.clientHeight,
   0.1,
   1000
 );
@@ -73,15 +73,11 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 camera.position.set(0, terrainMaxHeight * 2, terrainDepth);
-renderer.setSize(1000, canvas.height);
+renderer.setSize(threeJSDisplay.clientWidth, threeJSDisplay.clientHeight);
 document.getElementById("threeJSDisplay").appendChild(renderer.domElement);
 
 const bufferLength = frequencyDataLength;
 const dataArray = new Float32Array(bufferLength);
-
-function threeJS() {
-  console.log("ThreeJS Loaded!");
-}
 
 let batchSize = 100; // Number of vertices to update per frame
 let vertexIndex = 0; // Index of the vertex to start updating

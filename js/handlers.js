@@ -16,8 +16,14 @@ function batchSizeSliderChanged() {
   batchSliderTextElement.innerHTML = batchSize;
 }
 
+function historySliderChanged() {
+  frequencyHistoryLimit = historySliderElement.value;
+  historySliderTextElement.innerHTML = frequencyHistoryLimit;
+}
+
 //#endregion
 
+//#region Button Handlers
 stopButton.addEventListener("click", () => {
   stop();
   isStarted = false;
@@ -33,35 +39,12 @@ startButton.addEventListener("click", () => {
 function start() {
   isTickAdvancing = true;
   oscillator = audioContext.createOscillator();
-  oscillator.type = "sin";
+  oscillator.type = "sine";
   oscillator.frequency.value = 440;
   oscillator.connect(analyserNode);
   oscillator.start();
 
   init();
-
-  //   const width = 1; // width of each box
-  //   const heightMultiplier = 2; // multiply the value of each element by this amount to get the height of the box
-  //   const depth = 1; // depth of each box
-  //   const spacing = 2; // spacing between each box
-  //   for (let i = 0; i < frequencyHistory.length; i++) {
-  //     for (let j = 0; j < frequencyHistory[i].length; j++) {
-  //       const boxGeometry = new THREE.BoxGeometry(
-  //         width,
-  //         frequencyHistory[i][j] * heightMultiplier,
-  //         depth
-  //       );
-  //       const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // set the color of each box to red
-  //       const box = new THREE.Mesh(boxGeometry, boxMaterial);
-  //       // ! make another 2d array of box objects
-  //       box.position.x = (i - frequencyHistory.length / 2) * (width + spacing); // position the box in a grid
-  //       box.position.y = (frequencyHistory[i][j] * heightMultiplier) / 2; // position the box so that its base is at y=0
-  //       box.position.z = (j - frequencyHistory[i].length / 2) * (depth + spacing); // position the box in a grid
-  //       //scene.add(box); // add the box to the scene
-  //       //renderer.render(scene, camera);
-  //     }
-  //   }
-  // }
 }
 
 function stop() {
@@ -69,6 +52,9 @@ function stop() {
   oscillator.stop();
 }
 
+//#endregion
+
+//#region History Handlers
 function updateDimensionalData() {
   const currentAmplitudes = [];
   for (let i = 0; i < frequencyDataLength; i++) {
@@ -81,10 +67,14 @@ function updateDimensionalData() {
 
 function limitDimensionalData() {
   if (frequencyHistory.length > frequencyHistoryLimit) {
-    frequencyHistory.shift();
+    // remove the oldest data without shifting the history
+    frequencyHistory.splice(0, frequencyHistory.length - frequencyHistoryLimit);
   }
 }
 
+//#endregion
+
+//#region Oscilation Handlers
 function sinOscilation(tick, minValue, maxValue, period) {
   const amplitude = 100; // set the amplitude of the sine wave
   const center = (maxValue + minValue) / 200; // set the center value of the sine wave
@@ -123,6 +113,35 @@ function toggleSin() {
   }
 }
 
+//#endregion
+
+//#region Draw Handlers
 function toggleGradient() {
   isGradient = !isGradient;
 }
+
+function toggleHistory() {
+  isDisplayingHistory = !isDisplayingHistory;
+}
+
+function toggle3D() {
+  isDisplaying3D = !isDisplaying3D;
+}
+
+function toggleWaveform() {
+  isDisplayingWaveform = !isDisplayingWaveform;
+}
+//#endregion
+
+//#region Nav Handlers
+function navigate(page) {
+  switch (page) {
+    case 1:
+      window.location.href = "Layout1.html";
+      break;
+    case 2:
+      window.location.href = "Layout2.html";
+      break;
+  }
+}
+//#endregion

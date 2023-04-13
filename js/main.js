@@ -1,5 +1,4 @@
 //#region Declarations & Init Sequence
-
 window.addEventListener("load", init);
 
 const audioContext = new AudioContext();
@@ -7,6 +6,11 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const startButton = document.getElementById("startButton");
 const stopButton = document.getElementById("stopButton");
+const threeJSDisplay = document.getElementById("threeJSDisplay");
+const canvasContainer = document.getElementById("canvas-container");
+
+canvas.width = canvasContainer.clientWidth;
+canvas.height = canvasContainer.clientHeight;
 
 const gainSliderElement = document.getElementById("gainSlider");
 const gainSliderTextElement = document.getElementById("gainSlider-value");
@@ -26,6 +30,9 @@ const resolutionSliderTextElement = document.getElementById(
   "resolutionSlider-value"
 );
 
+const historySliderElement = document.getElementById("historySlider");
+const historySliderTextElement = document.getElementById("historySlider-value");
+
 const analyserNode = audioContext.createAnalyser({ fftSize: 2048 });
 const gainNode = audioContext.createGain();
 
@@ -33,19 +40,29 @@ const sectionHeight = canvas.height / 3;
 const section1 = sectionHeight;
 const section2 = sectionHeight * 2;
 const cnvWidth = canvas.width;
+const barWidth = 10;
 
+const tickDisplay = document.getElementById("tickDisplay");
+const fpsDisplay = document.getElementById("FPSDisplay");
 let isTickAdvancing = false;
 let tick = 0;
-let timeStep = 1;
+let fps = 0;
+let lastTime = Date.now();
+let frameCount = 0;
 
 let frequencyHistory = [];
-let frequencyHistoryLimit = 64;
+let frequencyHistoryLimit = Math.ceil(cnvWidth / barWidth);
+historySliderElement.max = frequencyHistoryLimit;
 
 const frequencyDataLength = analyserNode.frequencyBinCount;
 const frequencyData = new Uint8Array(frequencyDataLength);
 
 let isAnimatingOscilation = false;
 let isGradient = true;
+let isDisplayingHistory = true;
+let isDisplaying3D = true;
+let isDisplayingWaveform = true;
+
 let prioritizedFreq = null;
 
 analyserNode.connect(gainNode);
@@ -57,7 +74,6 @@ let isStarted = false;
 
 function init() {
   uiUpdate();
-  threeJS();
   draw();
 }
 
@@ -68,25 +84,43 @@ function uiUpdate() {
 
 function draw() {
   update();
-  threeJSUpdate();
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (tick % timeStep == 0) {
+
+  if (isDisplaying3D) {
+    threeJSUpdate();
+  }
+  if (isDisplayingHistory) {
     renderRow1();
   }
   renderRow2();
-  renderRow3();
+  if (isDisplayingWaveform) {
+    renderRow3();
+  }
+
   renderDividers();
   if (isTickAdvancing) {
     requestAnimationFrame(draw);
   }
+
+  const currentTime = Date.now();
+  const elapsed = currentTime - lastTime;
+
+  if (elapsed > 1000) {
+    fps = Math.round(frameCount / (elapsed / 1000));
+    frameCount = 0;
+    lastTime = currentTime;
+  }
+
+  frameCount++;
+
+  fpsDisplay.innerText = `FPS: ${fps}`;
 }
 
 function update() {
   if (isTickAdvancing) {
     tick += 1;
-    document.getElementById("tickDisplay").innerHTML = `Tick: ${formatNumber(
-      tick
-    )}`;
+    tickDisplay.innerHTML = `Tick: ${formatNumber(tick)}`;
     if (isAnimatingOscilation) {
       oscialtePitch();
     }
@@ -119,16 +153,15 @@ function renderRow1() {
     const currentAmplitudes = frequencyHistory[i];
     for (let k = 0; k < currentAmplitudes.length; k++) {
       const amplitude = currentAmplitudes[k];
-      const barWidth = 10;
       const barHeight = (amplitude / 255) * cnvHeight;
-      const x = cnvWidth - i * barWidth;
+      const x = i * barWidth;
       const y = cnvHeight - barHeight;
       if (isGradient) {
         ctx.fillStyle = `rgb(${amplitude}, 0, ${255 - amplitude}, 0.1)`;
-        ctx.fillRect(x, y, barWidth, barHeight);
+        ctx.fillRect(cnvWidth - x - barWidth, y, barWidth, barHeight);
       } else {
         ctx.fillStyle = `rgb(0, 0, 0, 0.1)`;
-        ctx.fillRect(x, y, barWidth, 3);
+        ctx.fillRect(cnvWidth - x - barWidth, y, barWidth, 3);
       }
     }
   }
