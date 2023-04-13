@@ -127,6 +127,19 @@
               />
               <span id="historySlider-value"></span>
             </div>
+            <!-- ACCURACY SLIDER -->
+            <div class="slider-container">
+              <label for="accuracySlider">Accuracy</label>
+              <input
+                type="range"
+                id="accuracySlider"
+                name="accuracySlider"
+                min="10"
+                max="100"
+                oninput="accuracySliderChanged()"
+              />
+              <span id="accuracySlider-value"></span>
+            </div>
             <!-- TOGGLE 3D-->
             <div class="checkbox-container">
               <label for="threeDCheckbox">3D</label>

@@ -33,6 +33,11 @@ const resolutionSliderTextElement = document.getElementById(
 const historySliderElement = document.getElementById("historySlider");
 const historySliderTextElement = document.getElementById("historySlider-value");
 
+const accuracySliderElement = document.getElementById("accuracySlider");
+const accuracySliderTextElement = document.getElementById(
+  "accuracySlider-value"
+);
+
 const column2 = document.getElementById("column2");
 
 const analyserNode = audioContext.createAnalyser({ fftSize: 2048 });
@@ -42,7 +47,7 @@ const sectionHeight = canvas.height / 3;
 const section1 = sectionHeight;
 const section2 = sectionHeight * 2;
 const cnvWidth = canvas.width;
-const barWidth = 40;
+let barWidth = 40;
 
 const tickDisplay = document.getElementById("tickDisplay");
 const fpsDisplay = document.getElementById("FPSDisplay");

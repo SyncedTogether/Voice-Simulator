@@ -21,6 +21,13 @@ function historySliderChanged() {
   historySliderTextElement.innerHTML = frequencyHistoryLimit;
 }
 
+function accuracySliderChanged() {
+  barWidth = accuracySliderElement.value;
+  accuracySliderTextElement.innerHTML = barWidth;
+  frequencyHistoryLimit = Math.ceil(cnvWidth / barWidth);
+  historySliderElement.max = frequencyHistoryLimit;
+}
+
 //#endregion
 
 //#region Button Handlers
