@@ -33,6 +33,8 @@ const resolutionSliderTextElement = document.getElementById(
 const historySliderElement = document.getElementById("historySlider");
 const historySliderTextElement = document.getElementById("historySlider-value");
 
+const column2 = document.getElementById("column2");
+
 const analyserNode = audioContext.createAnalyser({ fftSize: 2048 });
 const gainNode = audioContext.createGain();
 
@@ -40,7 +42,7 @@ const sectionHeight = canvas.height / 3;
 const section1 = sectionHeight;
 const section2 = sectionHeight * 2;
 const cnvWidth = canvas.width;
-const barWidth = 10;
+const barWidth = 40;
 
 const tickDisplay = document.getElementById("tickDisplay");
 const fpsDisplay = document.getElementById("FPSDisplay");
@@ -49,6 +51,7 @@ let tick = 0;
 let fps = 0;
 let lastTime = Date.now();
 let frameCount = 0;
+let runtimeFactor = 1;
 
 let frequencyHistory = [];
 let frequencyHistoryLimit = Math.ceil(cnvWidth / barWidth);
@@ -65,11 +68,31 @@ let isDisplayingWaveform = true;
 
 let prioritizedFreq = null;
 
+const fpsOdometer = new Odometer(
+  0,
+  200,
+  column2.clientWidth / 1.3,
+  column2.clientWidth / 1.3,
+  true,
+  "FPS"
+);
+const performanceOdometer = new Odometer(
+  0,
+  1,
+  column2.clientWidth / 1.3,
+  column2.clientWidth / 1.3,
+  false,
+  "Runtime Factor"
+);
+column2.appendChild(fpsOdometer.canvas);
+column2.appendChild(performanceOdometer.canvas);
+
 analyserNode.connect(gainNode);
 gainNode.connect(audioContext.destination);
 
 let oscillator = null;
 let isStarted = false;
+
 //#endregion
 
 function init() {
@@ -83,6 +106,7 @@ function uiUpdate() {
 }
 
 function draw() {
+  const startTime = Date.now();
   update();
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -99,6 +123,9 @@ function draw() {
   }
 
   renderDividers();
+
+  renderOdometers();
+
   if (isTickAdvancing) {
     requestAnimationFrame(draw);
   }
@@ -106,7 +133,7 @@ function draw() {
   const currentTime = Date.now();
   const elapsed = currentTime - lastTime;
 
-  if (elapsed > 1000) {
+  if (elapsed > 10) {
     fps = Math.round(frameCount / (elapsed / 1000));
     frameCount = 0;
     lastTime = currentTime;
@@ -114,7 +141,9 @@ function draw() {
 
   frameCount++;
 
-  fpsDisplay.innerText = `FPS: ${fps}`;
+  const endTime = Date.now();
+  const actualTime = endTime - startTime;
+  runtimeFactor = 1 - actualTime / 1000;
 }
 
 function update() {
@@ -262,6 +291,11 @@ function renderRow3() {
   ctx.stroke();
 
   ctx.restore();
+}
+
+function renderOdometers() {
+  fpsOdometer.render(fps);
+  performanceOdometer.render(runtimeFactor);
 }
 
 function getSpectralCentroid() {
