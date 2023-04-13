@@ -1,0 +1,21 @@
+.left-buttons,
+.right-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  padding: 10px;
+  background-color: #ccc;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+}
